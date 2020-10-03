@@ -1,6 +1,6 @@
 
 export default {
-  mode: 'spa',
+  ssr: 'true',
   /*
   ** Headers of the page
   */
