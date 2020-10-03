@@ -9,7 +9,6 @@ frontend:
         - (cd app1; yarn generate)
     postBuild:
       commands:
-        - cp -rf static/* dist/
         - mv app1/dist/* dist/app1/
   artifacts:
     baseDirectory: dist/
