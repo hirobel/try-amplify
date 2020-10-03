@@ -17,12 +17,11 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import { Auth } from 'aws-amplify'
-import { AmplifyEventBus } from 'aws-amplify-vue'
 
-export default {
+export default Vue.extend({
   data(){
     return {
       signedIn: false,
@@ -37,18 +36,8 @@ export default {
     } catch (err) {
       this.signedIn = false
     }
-    // 認証ステータスが変わった時に呼び出されるイベントを登録
-    AmplifyEventBus.$on('authState', async  info => {
-      if (info === 'signedIn') {
-        let cognitoUser = await Auth.currentAuthenticatedUser()
-        this.signedIn = true
-        this.username = cognitoUser.username
-      } else {
-        this.signedIn = false
-      }
-    });
   }
-}
+})
 </script>
 
 <style>
