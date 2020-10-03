@@ -1,28 +1,17 @@
 <template>
   <div class="container">
     <div>
-      <logo />
-      <h1 class="title">
-        app1
-      </h1>
-      <h2 class="subtitle">
-        My cat&#39;s pajamas Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+      <div v-if="signedIn">
+        <div id="nav">
+          <div class="amplify-sign-out">
+            {{username}} さんは現在サインイン中です
+            <amplify-sign-out/>
+          </div>
+        </div>
+        <router-view/>
+      </div>
+      <div v-else>
+        <amplify-authenticator />
       </div>
     </div>
   </div>
@@ -30,13 +19,36 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Logo from '~/components/Logo.vue'
+import { Auth } from 'aws-amplify'
+import { AmplifyEventBus } from 'aws-amplify-vue'
 
-export default Vue.extend({
-  components: {
-    Logo
+export default {
+  data(){
+    return {
+      signedIn: false,
+      username: ''
+    }
+  },
+  async beforeCreate() {
+    try {
+      let cognitoUser = await Auth.currentAuthenticatedUser()
+      this.signedIn = true
+      this.username = cognitoUser.username
+    } catch (err) {
+      this.signedIn = false
+    }
+    // 認証ステータスが変わった時に呼び出されるイベントを登録
+    AmplifyEventBus.$on('authState', async  info => {
+      if (info === 'signedIn') {
+        let cognitoUser = await Auth.currentAuthenticatedUser()
+        this.signedIn = true
+        this.username = cognitoUser.username
+      } else {
+        this.signedIn = false
+      }
+    });
   }
-})
+}
 </script>
 
 <style>

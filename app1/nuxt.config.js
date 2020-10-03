@@ -1,6 +1,6 @@
 
 export default {
-  ssr: 'true',
+  ssr: false,
   /*
   ** Headers of the page
   */
@@ -27,9 +27,7 @@ export default {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [
-  ],
-  /*
+  plugins: ['~/plugins/amplify.js'],  /*
   ** Nuxt.js dev-modules
   */
   buildModules: [
